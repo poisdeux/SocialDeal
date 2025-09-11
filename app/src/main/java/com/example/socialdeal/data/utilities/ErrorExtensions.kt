@@ -11,7 +11,7 @@ import kotlin.coroutines.cancellation.CancellationException
 suspend fun <S> tryWithErrorHandling(block: suspend () -> S): Result<S, ErrorTypes> {
     return try {
         Result.Success(block())
-    } catch (socketTimeoutException: SocketTimeoutException) {
+    } catch (_: SocketTimeoutException) {
         Result.Failure(ErrorTypes.NETWORK_TIMEOUT)
     } catch (ioException: IOException) {
         Timber.e(ioException)
@@ -19,7 +19,7 @@ suspend fun <S> tryWithErrorHandling(block: suspend () -> S): Result<S, ErrorTyp
     } catch (httpException: HttpException) {
         Timber.e(httpException)
         Result.Failure(httpException.convert { it } )
-    } catch (cancellationException: CancellationException) {
+    } catch (_: CancellationException) {
         Result.Failure(ErrorTypes.JOB_CANCELLED)
     } catch (exceptionToHandle: Exception) {
         Timber.e(exceptionToHandle)
