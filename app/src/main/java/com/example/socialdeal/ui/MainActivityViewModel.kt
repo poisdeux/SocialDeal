@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.socialdeal.data.network.ApiClient
 import com.example.socialdeal.data.repositories.DealsRepository
 import com.example.socialdeal.data.utilities.Result
+import com.example.socialdeal.ui.components.Destination
 import com.example.socialdeal.ui.screens.MainScreenState
 import com.example.socialdeal.ui.values.ErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,18 @@ class MainActivityViewModel(
     val uiState: StateFlow<MainScreenState> = _uiState
 
     init {
+        showDeals()
+    }
+
+    fun navigateTo(destination: Destination) {
+        when (destination) {
+            Destination.DEALS -> showDeals()
+            Destination.FAVOURITES -> showFavourites()
+            Destination.SETTINGS -> showSettings()
+        }
+    }
+
+    private fun showDeals() {
         viewModelScope.launch {
             dealsRepository.getDeals().let { result ->
                 when (result) {
@@ -36,6 +49,18 @@ class MainActivityViewModel(
                     }
                 }
             }
+        }
+    }
+
+    private fun showFavourites() {
+        _uiState.update { state ->
+            state.copy(error = null, state = MainScreenState.States.ShowFavourites)
+        }
+    }
+
+    private fun showSettings() {
+        _uiState.update { state ->
+            state.copy(error = null, state = MainScreenState.States.ShowSettings)
         }
     }
 

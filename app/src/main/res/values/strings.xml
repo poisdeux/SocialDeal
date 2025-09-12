@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">SocialDeal</string>
     <string name="ooops_something_went_wrong">Ooops, something went wrong!</string>
+    <string name="deals">Deals</string>
+    <string name="favourites">Favourites</string>
+    <string name="settings">Settings</string>
 </resources>

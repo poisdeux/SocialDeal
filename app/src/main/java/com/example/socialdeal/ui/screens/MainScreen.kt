@@ -23,11 +23,15 @@ fun MainScreen(
     mainScreenState: MainScreenState
 ) {
     when (mainScreenState.state) {
-        is MainScreenState.States.Loading -> LoadingScreen()
+        is MainScreenState.States.Loading -> LoadingScreen(modifier)
         is MainScreenState.States.CloseApp -> {}
-        is MainScreenState.States.ShowListOfDeals -> DealsList(deals = mainScreenState.state.deals)
+        is MainScreenState.States.ShowListOfDeals -> DealsList(
+            modifier = modifier,
+            deals = mainScreenState.state.deals
+        )
         is MainScreenState.States.ShowDealDetail -> {}
         is MainScreenState.States.ShowSettings -> {}
+        MainScreenState.States.ShowFavourites -> {}
     }
 }
 
@@ -70,6 +74,7 @@ data class MainScreenState(
         data object CloseApp : States()
         data class ShowListOfDeals(val deals: List<Deal>): States()
         data class ShowDealDetail(val deal: Deal) : States()
+        data object ShowFavourites: States()
         data object ShowSettings: States()
     }
 }
