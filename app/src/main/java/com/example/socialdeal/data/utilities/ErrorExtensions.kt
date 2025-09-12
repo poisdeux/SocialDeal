@@ -8,9 +8,9 @@ import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.coroutines.cancellation.CancellationException
 
-suspend fun <S> tryWithErrorHandling(block: suspend () -> S): Result<S, ErrorTypes> {
+suspend fun <S> tryWithErrorHandling(block: suspend () -> Result<S, ErrorTypes>): Result<S, ErrorTypes> {
     return try {
-        Result.Success(block())
+        block()
     } catch (_: SocketTimeoutException) {
         Result.Failure(ErrorTypes.NETWORK_TIMEOUT)
     } catch (ioException: IOException) {

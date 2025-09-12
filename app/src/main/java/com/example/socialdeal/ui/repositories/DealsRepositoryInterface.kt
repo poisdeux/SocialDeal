@@ -8,8 +8,16 @@ import java.net.URL
 interface DealsRepositoryInterface {
     suspend fun getDeals(): Result<List<Deal>, ErrorTypes>
 
+    suspend fun getDealDescription(dealUnique: UniqueID): Result<DealDescription, ErrorTypes>
+
+    @JvmInline
+    value class UniqueID(val value: String)
+
+    @JvmInline
+    value class DealDescription(val value: String)
+
     data class Deal(
-        val id: String,
+        val id: UniqueID,
         val imageUrl: URL?,
         val title: String,
         val company: String,

@@ -35,30 +35,37 @@ val Typography = Typography(
 )
 
 object TextStyles {
-    val title = TextStyle(
+    val default = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         color = Black200
     )
 
+    val title = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        color = Black200
+    )
+
     val label = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 8.sp,
+        fontSize = 10.sp,
         color = Black40
     )
     val labelSold = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 8.sp,
+        fontSize = 10.sp,
         color = Blue20
     )
 
     val fromPrice = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 8.sp,
+        fontSize = 10.sp,
         color = Black40,
         textDecoration = TextDecoration.LineThrough
     )
@@ -66,7 +73,7 @@ object TextStyles {
     val discountInteger = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
+        fontSize = 16.sp,
         color = Green255
     )
 

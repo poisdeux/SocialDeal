@@ -16,6 +16,7 @@ import com.example.socialdeal.ui.MainActivityViewModel
 import com.example.socialdeal.ui.components.TopBar
 import com.example.socialdeal.ui.components.TopBarAction
 import com.example.socialdeal.ui.screens.MainScreen
+import com.example.socialdeal.ui.screens.MainScreenAction
 import com.example.socialdeal.ui.theme.SocialDealTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +42,12 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     MainScreen(
                         modifier = Modifier.padding(innerPadding),
-                        mainScreenState = uiState
+                        mainScreenState = uiState,
+                        onAction = {
+                            when (it) {
+                                is MainScreenAction.ShowDealDetail -> viewModel.showDealDetail(it.deal)
+                            }
+                        }
                     )
                 }
             }

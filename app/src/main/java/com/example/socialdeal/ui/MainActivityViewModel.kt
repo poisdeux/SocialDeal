@@ -9,6 +9,7 @@ import com.example.socialdeal.data.network.ApiClient
 import com.example.socialdeal.data.repositories.DealsRepository
 import com.example.socialdeal.data.utilities.Result
 import com.example.socialdeal.ui.components.Destination
+import com.example.socialdeal.ui.repositories.DealsRepositoryInterface
 import com.example.socialdeal.ui.screens.MainScreenState
 import com.example.socialdeal.ui.values.ErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,22 @@ class MainActivityViewModel(
             Destination.DEALS -> showDeals()
             Destination.FAVOURITES -> showFavourites()
             Destination.SETTINGS -> showSettings()
+        }
+    }
+
+    fun showDealDetail(deal: DealsRepositoryInterface.Deal) {
+        viewModelScope.launch {
+            dealsRepository.getDealDescription(deal.id).let { result ->
+                when (result) {
+                    is Result.Failure -> _uiState.update { state -> state.copy(error = ErrorMessage.UNKNOWN_ERROR) }
+                    is Result.Success -> _uiState.update { state ->
+                        state.copy(
+                            error = null,
+                            state = MainScreenState.States.ShowDealDetail(deal, result.result)
+                        )
+                    }
+                }
+            }
         }
     }
 

@@ -8,17 +8,22 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.socialdeal.R
+import com.example.socialdeal.ui.repositories.DealsRepositoryInterface
 import com.example.socialdeal.ui.repositories.DealsRepositoryInterface.Deal
 import com.example.socialdeal.ui.theme.TextStyles
 import com.example.socialdeal.ui.values.Price
@@ -27,13 +32,15 @@ import java.net.URL
 @Composable
 fun DealItem(
     modifier: Modifier = Modifier,
-    deal: Deal
+    deal: Deal,
+    description: DealsRepositoryInterface.DealDescription? = null
 ) {
     Column(
         modifier = modifier
     ) {
         AsyncImage(
             modifier = Modifier
+                .padding(top = dimensionResource(R.dimen.padding_default))
                 .fillMaxWidth()
                 .aspectRatio(1.77f)
                 .clip(RoundedCornerShape(dimensionResource(R.dimen.corner_radius_large))),
@@ -59,7 +66,6 @@ fun DealItem(
         )
 
         Row(
-
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = dimensionResource(R.dimen.padding_default)),
@@ -88,6 +94,14 @@ fun DealItem(
                     )
                 }
             }
+        }
+
+        description?.let {
+            Text(
+                modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_default)),
+                text = AnnotatedString.fromHtml(it.value),
+                style = TextStyles.default
+            )
         }
     }
 }
@@ -131,7 +145,7 @@ fun DealItemPreview() {
     DealItem(
         modifier = Modifier.width(280.dp),
         deal = Deal(
-            id = "id",
+            id = DealsRepositoryInterface.UniqueID("id"),
             imageUrl = URL("https://picsum.photos/200"),
             title = "Geweldige aanbieding!",
             company = "Het bedrijf",
@@ -139,7 +153,8 @@ fun DealItemPreview() {
             sold = "Verkocht: 2.321",
             currencySymbol = NumberFormat.getCurrencyInstance().currency.symbol,
             originalPrice = Price(12.toBigInteger(), 33.toBigInteger()),
-            discountedPrice = Price(9.toBigInteger(), 95.toBigInteger())
-        )
+            discountedPrice = Price(9.toBigInteger(), 95.toBigInteger()),
+        ),
+        description = DealsRepositoryInterface.DealDescription("<p>Heb je zin om lekker onderuit te zakken in een goede bioscoopstoel tijdens een leuke film? Dan zit je hier helemaal goed. Bij Corendon Cinema heb je heerlijke bioscoopstoelen en een leuk aanbod van de nieuwste films. Daarnaast krijg je er ook nog popcorn en een drankje naar keuze bij! Een leuk uitje om te doen met vrienden, je gezin of je partner. Alvast veel plezier!<br /><br /><strong>Bioscooparrangement</strong></p><ul><li><strong>Filmticket</strong></li><li><strong>Popcorn medium</strong></li><li><strong>Drankje naar keuze</strong><br /><em>fris, bier of wijn</em></li></ul><p></p>")
     )
 }
