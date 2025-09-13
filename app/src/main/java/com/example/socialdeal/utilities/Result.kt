@@ -1,4 +1,4 @@
-package com.example.socialdeal.data.utilities
+package com.example.socialdeal.utilities
 
 sealed class Result<S, F> {
     data class Failure<S, F>(val error: F) : Result<S, F>()

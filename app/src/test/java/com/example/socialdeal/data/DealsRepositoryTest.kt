@@ -2,7 +2,7 @@ package com.example.socialdeal.data
 
 import com.example.socialdeal.data.network.ApiClient
 import com.example.socialdeal.data.repositories.DealsRepository
-import com.example.socialdeal.data.utilities.Result
+import com.example.socialdeal.utilities.Result
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.fail
 import org.junit.Test

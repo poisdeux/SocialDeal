@@ -19,7 +19,8 @@ fun <R> JsonDeal.convert(result: (Deal) -> R) : R? {
                 originalPrice = this.prices?.fromPrice?.convert { it },
                 discountedPrice = this.prices?.price?.convert { it },
                 sold = this.soldLabel ?: "",
-                currencySymbol = this.prices?.price?.currency?.symbol ?: ""
+                currencySymbol = this.prices?.price?.currency?.symbol ?: "",
+                isFavourite = false
             )
         )
     }

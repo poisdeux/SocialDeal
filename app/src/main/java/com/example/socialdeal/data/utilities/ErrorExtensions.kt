@@ -2,6 +2,7 @@ package com.example.socialdeal.data.utilities
 
 import com.example.socialdeal.data.mappers.convert
 import com.example.socialdeal.data.values.ErrorTypes
+import com.example.socialdeal.utilities.Result
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
