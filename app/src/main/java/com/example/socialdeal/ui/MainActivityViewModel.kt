@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.socialdeal.data.network.ApiClient
 import com.example.socialdeal.data.repositories.DealsRepository
 import com.example.socialdeal.data.utilities.Result
-import com.example.socialdeal.ui.components.Destination
+import com.example.socialdeal.ui.components.TabBarItem
 import com.example.socialdeal.ui.repositories.DealsRepositoryInterface
 import com.example.socialdeal.ui.screens.MainScreenState
 import com.example.socialdeal.ui.values.ErrorMessage
@@ -23,15 +23,36 @@ class MainActivityViewModel(
     private val _uiState = MutableStateFlow(MainScreenState(state = MainScreenState.States.Loading))
     val uiState: StateFlow<MainScreenState> = _uiState
 
+    private var currentTabBarItem: TabBarItem = TabBarItem.DEALS
+
     init {
         showDeals()
     }
 
-    fun navigateTo(destination: Destination) {
-        when (destination) {
-            Destination.DEALS -> showDeals()
-            Destination.FAVOURITES -> showFavourites()
-            Destination.SETTINGS -> showSettings()
+    fun onBackPressed() {
+        when (uiState.value.state) {
+            MainScreenState.States.CloseApp,
+            MainScreenState.States.Loading,
+            MainScreenState.States.ShowFavourites,
+            is MainScreenState.States.ShowListOfDeals,
+            MainScreenState.States.ShowSettings -> _uiState.update { state ->
+                state.copy(state = MainScreenState.States.CloseApp)
+            }
+            is MainScreenState.States.ShowDealDetail -> {
+                when (currentTabBarItem) {
+                    TabBarItem.DEALS -> showDeals()
+                    TabBarItem.FAVOURITES -> showFavourites()
+                    TabBarItem.SETTINGS -> showSettings()
+                }
+            }
+        }
+    }
+
+    fun openTab(tabBarItem: TabBarItem) {
+        when (tabBarItem) {
+            TabBarItem.DEALS -> showDeals()
+            TabBarItem.FAVOURITES -> showFavourites()
+            TabBarItem.SETTINGS -> showSettings()
         }
     }
 
@@ -53,6 +74,8 @@ class MainActivityViewModel(
 
     private fun showDeals() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(error = null, state = MainScreenState.States.Loading) }
+
             dealsRepository.getDeals().let { result ->
                 when (result) {
                     is Result.Failure -> _uiState.update { state ->

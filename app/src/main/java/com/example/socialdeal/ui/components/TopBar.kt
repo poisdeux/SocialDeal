@@ -41,12 +41,12 @@ fun TopBar(
         var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
 
         PrimaryTabRow(selectedTabIndex = selectedDestination) {
-            Destination.entries.forEachIndexed { index, destination ->
+            TabBarItem.entries.forEachIndexed { index, destination ->
                 Tab(
                     selected = selectedDestination == index,
                     onClick = {
                         selectedDestination = index
-                        onAction(TopBarAction.NavigateTo(destination))
+                        onAction(TopBarAction.Open(destination))
                     },
                     text = {
                         Text(
@@ -62,10 +62,10 @@ fun TopBar(
 }
 
 sealed class TopBarAction {
-    data class NavigateTo(val destination: Destination) : TopBarAction()
+    data class Open(val tabBarItem: TabBarItem) : TopBarAction()
 }
 
-enum class Destination(@field:StringRes val label: Int) {
+enum class TabBarItem(@field:StringRes val label: Int) {
     DEALS(R.string.deals),
     FAVOURITES(R.string.favourites),
     SETTINGS(R.string.settings)

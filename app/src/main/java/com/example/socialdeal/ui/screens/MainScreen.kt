@@ -33,7 +33,7 @@ fun MainScreen(
 
     when (mainScreenState.state) {
         is MainScreenState.States.Loading -> LoadingScreen(modifier)
-        is MainScreenState.States.CloseApp -> {}
+        is MainScreenState.States.CloseApp -> onAction(MainScreenAction.CloseApp)
         is MainScreenState.States.ShowListOfDeals -> DealsList(
             modifier = modifier,
             lazyListState = listState,
@@ -101,6 +101,7 @@ fun DealDetail(
 
 sealed class MainScreenAction {
     data class ShowDealDetail(val deal: Deal) : MainScreenAction()
+    object CloseApp : MainScreenAction()
 }
 
 data class MainScreenState(

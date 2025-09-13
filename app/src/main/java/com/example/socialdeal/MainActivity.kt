@@ -2,6 +2,7 @@ package com.example.socialdeal
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -26,6 +27,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        onBackPressedDispatcher.addCallback(this) {
+            viewModel.onBackPressed()
+        }
+
         setContent {
             val uiState by viewModel.uiState.collectAsState()
 
@@ -35,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     topBar = { TopBar(
                         onAction = {
                             when (it) {
-                                is TopBarAction.NavigateTo -> viewModel.navigateTo(it.destination)
+                                is TopBarAction.Open -> viewModel.openTab(it.tabBarItem)
                             }
                         }
                     ) },
@@ -46,6 +52,7 @@ class MainActivity : ComponentActivity() {
                         onAction = {
                             when (it) {
                                 is MainScreenAction.ShowDealDetail -> viewModel.showDealDetail(it.deal)
+                                MainScreenAction.CloseApp -> finish()
                             }
                         }
                     )
