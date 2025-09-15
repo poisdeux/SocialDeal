@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.socialdeal.ui.components.TabBarItem
 import com.example.socialdeal.ui.mappers.convert
 import com.example.socialdeal.ui.repositories.DealsRepositoryInterface
+import com.example.socialdeal.ui.repositories.SettingsRepositoryInterface
 import com.example.socialdeal.ui.screens.MainScreenState
+import com.example.socialdeal.ui.values.CurrencyTypes
 import com.example.socialdeal.ui.values.ErrorMessageType
 import com.example.socialdeal.utilities.Result
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,13 +16,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
-    val dealsRepository: DealsRepositoryInterface
+    val dealsRepository: DealsRepositoryInterface,
+    val settingsRepository: SettingsRepositoryInterface
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainScreenState(state = MainScreenState.States.ShowListOfDeals))
     val uiState: StateFlow<MainScreenState> = _uiState
 
     private val _deals = MutableStateFlow<Result<List<DealsRepositoryInterface.Deal>, ErrorMessageType>>(Result.Success(emptyList()))
     val deals: StateFlow<Result<List<DealsRepositoryInterface.Deal>, ErrorMessageType>> = _deals
+
+    private val _currencySetting = MutableStateFlow<CurrencyTypes>(CurrencyTypes.EURO)
+    val currencySetting: StateFlow<CurrencyTypes> = _currencySetting
 
     private var currentTabBarItem: TabBarItem = TabBarItem.DEALS
 
@@ -31,6 +37,17 @@ class MainActivityViewModel(
                     value = when (result) {
                         is Result.Failure -> Result.Failure(result.error.convert { it })
                         is Result.Success -> Result.Success(result.result)
+                    }
+                )
+            }
+        }
+
+        viewModelScope.launch {
+            settingsRepository.getCurrencySettings().collect { result ->
+                _currencySetting.emit(
+                    when (result) {
+                        is Result.Failure -> CurrencyTypes.EURO
+                        is Result.Success -> result.result
                     }
                 )
             }
@@ -95,6 +112,12 @@ class MainActivityViewModel(
                     }
                 }
             }
+        }
+    }
+
+    fun setCurrencySetting(currencySetting: CurrencyTypes) {
+        viewModelScope.launch {
+            settingsRepository.setSetting(currencySetting)
         }
     }
 

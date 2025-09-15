@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.example.socialdeal.data.network.ApiClient
 import com.example.socialdeal.data.repositories.DealsRepository
+import com.example.socialdeal.data.repositories.SettingsRepository
 
 class InjectorUtils(
     private val dataStore: DataStore<Preferences>
@@ -15,6 +16,12 @@ class InjectorUtils(
     override fun provideDealsRepository(): DealsRepository {
         return DealsRepository.getInstance(
             apiClient = provideApiClient(),
+            dataStore = dataStore
+        )
+    }
+
+    override fun provideSettingsRepository(): SettingsRepository {
+        return SettingsRepository.getInstance(
             dataStore = dataStore
         )
     }

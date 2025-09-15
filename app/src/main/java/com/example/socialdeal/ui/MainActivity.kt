@@ -13,13 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.example.socialdeal.utilities.Result
 import com.example.socialdeal.ui.components.TopBar
 import com.example.socialdeal.ui.components.TopBarAction
 import com.example.socialdeal.ui.di.InjectorUtils
 import com.example.socialdeal.ui.screens.MainScreen
 import com.example.socialdeal.ui.screens.MainScreenAction
 import com.example.socialdeal.ui.theme.SocialDealTheme
+import com.example.socialdeal.ui.values.CurrencyTypes
+import com.example.socialdeal.utilities.Result
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainActivityViewModel by viewModels { InjectorUtils.INSTANCE!!.provideMainActivityViewModelFactory() }
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
             val deals by viewModel.deals.collectAsState(Result.Success(emptyList()))
+            val currencySetting by viewModel.currencySetting.collectAsState(CurrencyTypes.EURO)
 
             SocialDealTheme {
                 Scaffold(
@@ -53,6 +55,7 @@ class MainActivity : ComponentActivity() {
                     MainScreen(
                         modifier = Modifier.Companion.padding(innerPadding),
                         mainScreenState = uiState,
+                        currencySetting = currencySetting,
                         deals = deals,
                         onAction = {
                             when (it) {
@@ -62,6 +65,7 @@ class MainActivity : ComponentActivity() {
                                     it.deal,
                                     it.isFavourite
                                 )
+                                is MainScreenAction.CurrencySettingChanged -> viewModel.setCurrencySetting(it.currencySetting)
                             }
                         }
                     )

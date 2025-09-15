@@ -26,9 +26,8 @@ interface DealsRepositoryInterface {
         val company: String,
         val city: String,
         val sold: String,
-        val currencySymbol: String,
         val originalPrice: Price?,
         val discountedPrice: Price?,
-        val isFavourite: Boolean
+        val isFavourite: Boolean,
     )
 }

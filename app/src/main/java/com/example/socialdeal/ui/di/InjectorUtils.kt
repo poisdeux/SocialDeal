@@ -9,7 +9,10 @@ class InjectorUtils(
     private val dataLayerInjector: DataLayerInjectorInterface
 ) {
     fun provideMainActivityViewModelFactory(): MainActivityViewModelFactory {
-        return MainActivityViewModelFactory(dataLayerInjector.provideDealsRepository())
+        return MainActivityViewModelFactory(
+            dealsRepository = dataLayerInjector.provideDealsRepository(),
+            settingsRepository = dataLayerInjector.provideSettingsRepository()
+        )
     }
 
     companion object {

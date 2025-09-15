@@ -34,6 +34,7 @@ import com.example.socialdeal.ui.repositories.DealsRepositoryInterface
 import com.example.socialdeal.ui.repositories.DealsRepositoryInterface.Deal
 import com.example.socialdeal.ui.theme.SocialDealTheme
 import com.example.socialdeal.ui.theme.TextStyles
+import com.example.socialdeal.ui.values.CurrencyTypes
 import com.example.socialdeal.ui.values.Price
 import java.net.URL
 
@@ -42,6 +43,7 @@ fun DealItem(
     modifier: Modifier = Modifier,
     deal: Deal,
     description: DealsRepositoryInterface.DealDescription? = null,
+    currencySetting: CurrencyTypes,
     onAction: (DealItemAction) -> Unit
 ) {
     Column(
@@ -103,14 +105,20 @@ fun DealItem(
                     OriginalPrice(
                         modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_default)),
                         price = originalPrice,
-                        currencySymbol = deal.currencySymbol
+                        currencySymbol = when (currencySetting) {
+                            CurrencyTypes.EURO -> NumberFormat.getCurrencyInstance(java.util.Locale.GERMANY).currency.symbol
+                            CurrencyTypes.DOLLAR -> NumberFormat.getCurrencyInstance(java.util.Locale.US).currency.symbol
+                        }
                     )
                 }
                 deal.discountedPrice?.let { discountedPrice ->
                     DiscountedPrice(
                         modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_default)),
                         price = discountedPrice,
-                        currencySymbol = deal.currencySymbol
+                        currencySymbol = when (currencySetting) {
+                            CurrencyTypes.EURO -> NumberFormat.getCurrencyInstance(java.util.Locale.GERMANY).currency.symbol
+                            CurrencyTypes.DOLLAR -> NumberFormat.getCurrencyInstance(java.util.Locale.US).currency.symbol
+                        }
                     )
                 }
             }
@@ -204,7 +212,6 @@ private fun DealItemPreview() {
                 company = "Het bedrijf",
                 city = "De stad",
                 sold = "Verkocht: 2.321",
-                currencySymbol = NumberFormat.getCurrencyInstance().currency.symbol,
                 originalPrice = Price(12.toBigInteger(), 33.toBigInteger()),
                 discountedPrice = Price(9.toBigInteger(), 95.toBigInteger()),
                 isFavourite = isFavourite.value
@@ -214,7 +221,8 @@ private fun DealItemPreview() {
                 when (it) {
                     is DealItemAction.IsFavourite -> isFavourite.value = it.isFavourite
                 }
-            }
+            },
+            currencySetting = CurrencyTypes.EURO
         )
     }
 }

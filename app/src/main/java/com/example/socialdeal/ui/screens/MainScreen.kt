@@ -21,10 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.socialdeal.R
 import com.example.socialdeal.ui.components.DealItem
 import com.example.socialdeal.ui.components.DealItemAction
+import com.example.socialdeal.ui.components.ItemSelector
+import com.example.socialdeal.ui.mappers.convert
 import com.example.socialdeal.ui.repositories.DealsRepositoryInterface
 import com.example.socialdeal.ui.repositories.DealsRepositoryInterface.Deal
 import com.example.socialdeal.ui.theme.SocialDealTheme
 import com.example.socialdeal.ui.theme.TextStyles
+import com.example.socialdeal.ui.values.CurrencyTypes
 import com.example.socialdeal.ui.values.ErrorMessageType
 import com.example.socialdeal.utilities.Result
 
@@ -32,6 +35,7 @@ import com.example.socialdeal.utilities.Result
 fun MainScreen(
     modifier: Modifier = Modifier,
     mainScreenState: MainScreenState,
+    currencySetting: CurrencyTypes,
     deals: Result<List<Deal>, ErrorMessageType>,
     onAction: (MainScreenAction) -> Unit
 ) {
@@ -49,6 +53,7 @@ fun MainScreen(
                 modifier = modifier,
                 lazyListState = dealsListState,
                 deals = deals.result,
+                currencySetting = currencySetting,
                 onAction = onAction
             )
         }
@@ -56,9 +61,14 @@ fun MainScreen(
             modifier = modifier,
             deal = mainScreenState.state.deal,
             description = mainScreenState.state.description,
+            currencySetting = currencySetting,
             onAction = onAction
         )
-        is MainScreenState.States.ShowSettings -> {}
+        is MainScreenState.States.ShowSettings -> Settings(
+            modifier = modifier,
+            currencySetting = currencySetting,
+            onAction = onAction
+        )
         MainScreenState.States.ShowFavourites -> when (deals) {
             is Result.Failure -> ErrorMessage(
                 modifier = modifier,
@@ -68,6 +78,7 @@ fun MainScreen(
                 modifier = modifier,
                 lazyListState = favoritesListState,
                 deals = deals.result.filter { it.isFavourite },
+                currencySetting = currencySetting,
                 onAction = onAction
             )
         }
@@ -107,6 +118,7 @@ fun DealsList(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState,
     deals: List<Deal>,
+    currencySetting: CurrencyTypes,
     onAction: (MainScreenAction) -> Unit
 ) {
     if (deals.isEmpty()) {
@@ -120,6 +132,7 @@ fun DealsList(
                 DealItem(
                     modifier = Modifier.clickable { onAction(MainScreenAction.ShowDealDetail(deal)) },
                     deal = deal,
+                    currencySetting = currencySetting,
                     onAction = {
                         when (it) {
                             is DealItemAction.IsFavourite -> {
@@ -143,6 +156,7 @@ fun DealDetail(
     modifier: Modifier = Modifier,
     deal: Deal,
     description: DealsRepositoryInterface.DealDescription,
+    currencySetting: CurrencyTypes,
     onAction: (MainScreenAction) -> Unit
 ) {
     DealItem(
@@ -151,6 +165,7 @@ fun DealDetail(
             .verticalScroll(rememberScrollState()),
         deal = deal,
         description = description,
+        currencySetting = currencySetting,
         onAction = {
             when (it) {
                 is DealItemAction.IsFavourite -> {
@@ -161,7 +176,31 @@ fun DealDetail(
     )
 }
 
+@Composable
+fun Settings(
+    modifier: Modifier,
+    currencySetting: CurrencyTypes,
+    onAction: (MainScreenAction) -> Unit
+) {
+    val currencyTypesStringHashMap = mutableMapOf<String, CurrencyTypes>()
+    CurrencyTypes.entries.forEach {
+        currencyTypesStringHashMap.put(stringResource(it.convert { it.value }), it)
+    }
+
+    ItemSelector(
+        modifier = modifier,
+        label = stringResource(R.string.currency),
+        selectedItem = stringResource(currencySetting.convert { it.value }),
+        items = CurrencyTypes.entries.map { stringResource(it.convert { it.value }) }
+    ) { itemSelected ->
+        currencyTypesStringHashMap[itemSelected]?.let {
+            onAction(MainScreenAction.CurrencySettingChanged(it))
+        }
+    }
+}
+
 sealed class MainScreenAction {
+    data class CurrencySettingChanged(val currencySetting: CurrencyTypes) : MainScreenAction()
     data class ShowDealDetail(val deal: Deal) : MainScreenAction()
     data class OnFavouriteIconClicked(val deal: Deal, val isFavourite: Boolean) : MainScreenAction()
     object CloseApp : MainScreenAction()
@@ -190,6 +229,7 @@ fun LoadingScreenPreview() {
         MainScreen(
             mainScreenState = MainScreenState(MainScreenState.States.ShowListOfDeals),
             deals = Result.Success(emptyList()),
+            currencySetting = CurrencyTypes.EURO,
             onAction = {}
         )
     }
