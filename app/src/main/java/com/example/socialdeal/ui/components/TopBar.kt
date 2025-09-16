@@ -27,7 +27,9 @@ fun TopBar(
     modifier: Modifier = Modifier,
     onAction: (TopBarAction) -> Unit = {}
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         TopAppBar(
             colors = topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,

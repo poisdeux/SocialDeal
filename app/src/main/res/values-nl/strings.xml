@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SocialDeal</string>
+    <string name="ooops_something_went_wrong">Oeps, er ging iets mis!</string>
+    <string name="deals">Aanbiedingen</string>
+    <string name="favourites">Favorieten</string>
+    <string name="settings">Instellingen</string>
+    <string name="remove_deal_from_list_of_favourites">Verwijder aanbieding van de lijst van favorieten</string>
+    <string name="add_deal_to_list_of_favourites">Voeg aanbieding toe aan de lijst van favorieten</string>
+    <string name="currency">Munteenheid</string>
+    <string name="euro">Euro</string>
+    <string name="dollar">Dollar</string>
+</resources>

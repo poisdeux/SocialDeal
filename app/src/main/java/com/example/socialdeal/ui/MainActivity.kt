@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
             SocialDealTheme {
                 Scaffold(
-                    modifier = Modifier.Companion.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopBar(
                             onAction = {
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     },
                 ) { innerPadding ->
                     MainScreen(
-                        modifier = Modifier.Companion.padding(innerPadding),
+                        modifier = Modifier.padding(innerPadding),
                         mainScreenState = uiState,
                         currencySetting = currencySetting,
                         deals = deals,
